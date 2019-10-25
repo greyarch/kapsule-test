@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-deployment
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment
+    spec:
+      containers:
+      - name: nginx-application
+        image: nginx
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "512Mi"
+        ports:
+          - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-cluster-ip
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx-deployment
+  type: ClusterIP
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    certmanager.k8s.io/issuer: "letsencrypt-prod"
+    certmanager.k8s.io/acme-challenge-type: http01
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  # - host: nginx.3f959895-f8f5-4128-9d74-05a3c2dfcd87.nodes.k8s.fr-par.scw.cloud
+  - host: supercrafters.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx-cluster-ip
+          servicePort: 80
