@@ -1,0 +1,18 @@
+dashboard:
+    enabled: true
+    domain: traefik.supercrafters.net
+kubernetes:
+    namespaces:
+        - default
+        - kube-system
+rbac:
+    enabled: true
+ssl:
+    enabled: true
+    enforced: true
+acme:
+    logging: true
+    enabled: true
+    staging: false
+    email: "gantcho@greyarch.net"
+    challengeType: tls-alpn-01

@@ -18,8 +18,8 @@ spec:
         image: nginx
         resources:
           limits:
-            cpu: "100m"
-            memory: "512Mi"
+            cpu: 100m
+            memory: 512Mi
         ports:
           - containerPort: 80
 
@@ -42,13 +42,15 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: nginx-ingress
-  annotations:
-    certmanager.k8s.io/issuer: "letsencrypt-prod"
-    certmanager.k8s.io/acme-challenge-type: http01
-    traefik.frontend.rule.type: PathPrefixStrip
+  # annotations:
+  #   cert-manager.io/issuer: letsencrypt-prod
+  #   traefik.frontend.rule.type: PathPrefixStrip
 spec:
+  # tls:
+  # - hosts:
+  #   - supercrafters.net
+  #   secretName: supercrafters-net-tls
   rules:
-  # - host: nginx.3f959895-f8f5-4128-9d74-05a3c2dfcd87.nodes.k8s.fr-par.scw.cloud
   - host: supercrafters.net
     http:
       paths:
